@@ -12,16 +12,22 @@
 #define LED2_OFF (PORTB &= ~(1<<4) )
 #define LED2_TOGGLE (PORTB ^= 1<<4 )
 
+#define LED3_ON (PORTB |= 1<<6 )
+#define LED3_OFF (PORTB &= ~(1<<6) )
+#define LED3_TOGGLE (PORTB ^= 1<<6 )
+
 #define BUTTON1 (PINB & 0x01)
 
 char led1_lastState = 0;
 int led2_delay = 200; //ms
-long int led2_timestamp = 0; 
+int led3_delay = 900;
+long int led2_timestamp = 0;
+long int led3_timestamp = 0;
 long int systemTimer = 0;
 
 int main(void)
 {
-  DDRB = 0x30; // PB5 as OUTPUT
+  DDRB = 0x70; // PB6 PB5 PB4 as OUTPUT
   DDRB = DDRB & 0xFE; // PB0 as INPUT
   while (1)
   {
@@ -29,12 +35,18 @@ int main(void)
     {
       led1_lastState = BUTTON1;
       if(BUTTON1 ==  1)
-      LED1_TOGGLE;
+        LED1_TOGGLE;
     }
+        
     if( ((systemTimer - led2_timestamp) >= led2_delay/2))
     {
       led2_timestamp = systemTimer;
       LED2_TOGGLE;
+    }
+    if( ((systemTimer - led3_timestamp) >= led3_delay/2))
+    {
+      led3_timestamp = systemTimer;
+      LED3_TOGGLE;
     }
     systemTimer++;
     //  LED2_TOGGLE;
